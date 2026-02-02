@@ -38,7 +38,7 @@ class Settings:
     log_file: str = _env("JARVIS_LOG_FILE", os.path.join(os.getcwd(), "data", "jarvis.log"))
     ollama_base: str = _env("JARVIS_OLLAMA_BASE", "http://localhost:11434")
     ollama_model: str = _env("JARVIS_OLLAMA_MODEL", "ollama/llama3.2-vision")
-    openai_model: str = _env("JARVIS_OPENAI_MODEL", "gpt-4.1-mini")
+    openai_model: str = _env("JARVIS_OPENAI_MODEL", "gpt-4o")
     server_host: str = _env("JARVIS_SERVER_HOST", "127.0.0.1")
     server_port: int = int(_env("JARVIS_SERVER_PORT", "8123"))
 

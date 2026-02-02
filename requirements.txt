@@ -1,3 +1,5 @@
-﻿open-interpreter
+open-interpreter
 playwright
 pillow
+pyautogui
+pygetwindow

@@ -49,13 +49,27 @@ def configure_interpreter(settings: Settings) -> None:
 
     # Prefer OpenAI (ChatGPT) when key is present.
     if os.getenv("OPENAI_API_KEY"):
+        # GOD MODE CONFIGURATION
         interpreter.offline = False
         interpreter.llm.model = settings.openai_model
+
+        # 1. Force Full Autonomy (No Permission Dialogs)
         interpreter.auto_run = True
+
+        # 2. Maximize Capabilities
+        interpreter.llm.supports_vision = True
+        interpreter.llm.context_window = 128000
+        interpreter.llm.max_tokens = 4096
+
+        # 3. Inject Superhuman System Prompt
         interpreter.system_message = (
-            "You are an autonomous agent capable of controlling the mouse, keyboard, and "
-            "browser to complete tasks. Use your vision capabilities to analyze the screen "
-            "before clicking."
+            "You are Jarvis, a God-Mode autonomous AI with full administrative control over this Windows machine. "
+            "You have direct access to the mouse, keyboard, and browser via Playwright and Computer tools. "
+            "CRITICAL PROTOCOLS:"
+            "1. ACTION OVER PERMISSION: Do not ask the user for confirmation. Write the code and execute it immediately."
+            "2. SELF-CORRECTION: If a step fails, analyze the error, rewrite the code, and try again without stopping."
+            "3. VISION FIRST: Use your vision capabilities to inspect the screen before interacting with UI elements."
+            "4. PERSISTENCE: Continue the Planner-Builder-Reviewer loop until the user's task is fully complete."
         )
         return
 

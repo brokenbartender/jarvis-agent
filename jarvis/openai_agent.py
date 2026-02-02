@@ -9,6 +9,7 @@ from typing import Any, Dict, List
 
 from openai import OpenAI
 
+from . import desktop
 
 def _safe_path(path: str) -> Path:
     return Path(path).expanduser().resolve()
@@ -62,6 +63,9 @@ def screenshot(path: str = "data/screen.png") -> str:
         return str(target)
     except Exception as exc:
         return f"error: {exc}"
+
+def _hotkey_from_list(keys: list[str]) -> str:
+    return desktop.hotkey(*keys)
 
 
 TOOLS: list[dict[str, Any]] = [
@@ -134,6 +138,131 @@ TOOLS: list[dict[str, Any]] = [
         },
         "strict": False,
     },
+    {
+        "type": "function",
+        "name": "get_screen_size",
+        "description": "Get primary screen size in pixels.",
+        "parameters": {"type": "object", "properties": {}},
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "mouse_move",
+        "description": "Move the mouse to screen coordinates.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "x": {"type": "integer"},
+                "y": {"type": "integer"},
+                "duration": {"type": "number"},
+            },
+            "required": ["x", "y"],
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "mouse_click",
+        "description": "Click mouse at optional screen coordinates.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "x": {"type": "integer"},
+                "y": {"type": "integer"},
+                "button": {"type": "string"},
+                "clicks": {"type": "integer"},
+            },
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "mouse_drag",
+        "description": "Drag mouse to screen coordinates.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "x": {"type": "integer"},
+                "y": {"type": "integer"},
+                "duration": {"type": "number"},
+                "button": {"type": "string"},
+            },
+            "required": ["x", "y"],
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "scroll",
+        "description": "Scroll mouse wheel by amount (positive up, negative down).",
+        "parameters": {
+            "type": "object",
+            "properties": {"amount": {"type": "integer"}},
+            "required": ["amount"],
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "type_text",
+        "description": "Type text via keyboard.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string"},
+                "interval": {"type": "number"},
+            },
+            "required": ["text"],
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "key_press",
+        "description": "Press a single key (e.g., enter, tab, esc).",
+        "parameters": {
+            "type": "object",
+            "properties": {"key": {"type": "string"}},
+            "required": ["key"],
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "hotkey",
+        "description": "Press a multi-key hotkey sequence.",
+        "parameters": {
+            "type": "object",
+            "properties": {"keys": {"type": "array", "items": {"type": "string"}}},
+            "required": ["keys"],
+        },
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "list_windows",
+        "description": "List open windows with titles and bounds.",
+        "parameters": {"type": "object", "properties": {}},
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "get_active_window",
+        "description": "Get the active window title and bounds.",
+        "parameters": {"type": "object", "properties": {}},
+        "strict": False,
+    },
+    {
+        "type": "function",
+        "name": "focus_window",
+        "description": "Focus a window whose title contains the given text.",
+        "parameters": {
+            "type": "object",
+            "properties": {"title_contains": {"type": "string"}},
+            "required": ["title_contains"],
+        },
+        "strict": False,
+    },
 ]
 
 
@@ -143,6 +272,17 @@ _TOOL_MAP = {
     "write_file": write_file,
     "run_command": run_command,
     "screenshot": screenshot,
+    "get_screen_size": desktop.get_screen_size,
+    "mouse_move": desktop.mouse_move,
+    "mouse_click": desktop.mouse_click,
+    "mouse_drag": desktop.mouse_drag,
+    "scroll": desktop.scroll,
+    "type_text": desktop.type_text,
+    "key_press": desktop.key_press,
+    "hotkey": _hotkey_from_list,
+    "list_windows": desktop.list_windows,
+    "get_active_window": desktop.get_active_window,
+    "focus_window": desktop.focus_window,
 }
 
 

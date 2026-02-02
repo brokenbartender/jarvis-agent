@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from typing import List
 
 from .actions import configure_interpreter, switch_to_small_ollama
-from .openai_agent import OpenAIAgent
 from .config import Settings
 from .logger import setup_logging
 from .memory import MemoryStore
@@ -131,13 +130,9 @@ class Runner:
                 return "packs cleared"
             return "pack commands: /pack list | /pack add <name> | /pack remove <name> | /pack show <name> | /pack clear"
 
-        if os.getenv("JARVIS_USE_OPENAI", "0") == "1":
-            agent = OpenAIAgent()
-            if self._get_mode() == "agentic_uiux":
-                return agent.run_agentic(command) or "ok"
-            return agent.run(command) or "ok"
+        backend = os.getenv("JARVIS_BACKEND", "ollama").strip().lower()
 
-        if True:
+        if backend in ("ollama", "local", "llm"):
             reply = self._ollama_generate(command)
             return reply or "ok"
 
